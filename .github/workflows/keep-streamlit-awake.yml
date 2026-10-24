@@ -1,0 +1,33 @@
+name: Keep Streamlit apps awake
+
+on:
+  schedule:
+    - cron: "17 */4 * * *"   # every 4 hours (apps sleep after ~12 hours idle)
+  workflow_dispatch:          # adds a "Run workflow" button for manual runs
+
+jobs:
+  wake:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Playwright
+        run: |
+          pip install playwright
+          python -m playwright install --with-deps chromium
+
+      - name: Visit and wake apps
+        run: python keep_awake.py
+
+      - name: Save screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-screenshots
+          path: screenshot-*.png
+          retention-days: 3
