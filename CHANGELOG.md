@@ -10,7 +10,7 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Unit tests for the app list and the awake / asleep / stays-asleep decisions; CI (ruff, pytest, pip-audit, lychee,
   gitleaks); pinned Playwright; LICENSE, SECURITY, decisions.
 
-## [1.0.0] - 2026-10-14
+## [1.0.0] - 2026-10-24
 
 ### Added
 
