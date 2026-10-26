@@ -66,3 +66,31 @@ def test_a_sleeping_app_gets_the_wake_button_clicked():
 def test_an_app_that_stays_asleep_fails_the_run():
     page = FakePage(asleep=True, stays_asleep=True)
     assert keep_awake.visit(page, "https://guest-request-agent.streamlit.app") is False
+
+
+def test_every_visit_says_it_is_the_keep_awake_job():
+    assert keep_awake.with_source("https://a.streamlit.app") == "https://a.streamlit.app?source=keepawake"
+    assert (
+        keep_awake.with_source("https://a.streamlit.app/?v=1&source=x")
+        == "https://a.streamlit.app/?v=1&source=keepawake"
+    )
+
+
+def test_apps_run_in_parallel_and_failures_are_reported():
+    import threading
+    import time
+
+    running, peak, lock = [0], [0], threading.Lock()
+
+    def fake_visit(url):
+        with lock:
+            running[0] += 1
+            peak[0] = max(peak[0], running[0])
+        time.sleep(0.05)
+        with lock:
+            running[0] -= 1
+        return "bad" not in url
+
+    apps = [f"https://app{i}.streamlit.app" for i in range(6)] + ["https://bad.streamlit.app"]
+    assert keep_awake.run_all(apps, fake_visit, parallel=3) == ["https://bad.streamlit.app"]
+    assert peak[0] == 3  # never more than three browsers at once

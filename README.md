@@ -37,8 +37,17 @@ real browser session as a visit, and only a browser can click the wake button.
 - Reads the app URLs from [`apps.txt`](apps.txt), one per line (`#` comments allowed).
 - Opens each one in headless Chromium (Playwright). If it's awake, it stays long enough to count as a visit. If it's
   asleep, it clicks "get this app back up" and waits for it to start.
+- Adds `?source=keepawake` to every visit. The hotel apps recognise it (the shared `bots` check in
+  [hotel-ai-platform](https://github.com/vamsialladev/hotel-ai-platform)): the page loads, which keeps the app awake,
+  but there's no model call, no log row, and the database isn't touched, so Neon's free tier can sleep.
+- Visits apps three at a time, each in its own browser; the job stops after 40 minutes.
 - Saves a screenshot of each app as a workflow artifact (kept 3 days).
 - Fails the run if any app is still asleep or errors, so GitHub sends me an email.
+- **Daily failure summary** (`.github/workflows/daily-failure-summary.yml`, 07:23 UTC): reads yesterday's rows in the
+  shared ops log (one Neon database for every hotel app, read-only) and opens an issue, or posts to Slack if
+  `SLACK_WEBHOOK_URL` is set, when an app's error rate was over 5% or it had requests but none succeeded. A day with
+  no traffic is reported, not alarmed (hotel-ai-platform decision 6). Without the `OPS_DATABASE_URL` secret it's a
+  dry run.
 - A second workflow makes a tiny commit on the 1st of each month, because GitHub turns off scheduled workflows in a
   public repo after 60 days without activity.
 
@@ -90,7 +99,7 @@ answer is paid always-on hosting; this is the free bridge until a pilot pays for
 | **Model choice** | None. This is a scheduled browser visit. |
 | **PII and tenant isolation** | It only opens public demo URLs; screenshots show synthetic data and are kept 3 days. |
 | **10K → 1M users** | Not the problem this solves: at real traffic an app never sleeps. For many apps, split `apps.txt` across parallel jobs; for production, always-on hosting replaces this. |
-| **Monitoring and alerting** | A failed run emails me; the stage 5 health check (hotel-ai-handoff) opens an issue when an app is down. |
+| **Monitoring and alerting** | A failed run emails me; the stage 5 health check (hotel-ai-handoff) opens an issue when an app is down; the daily failure summary opens one when an app's error rate passes 5% or nothing succeeded. Keep-awake visits are labelled `source=keepawake` so they never count as traffic or errors. |
 | **Failure modes and rollback** | An app that won't wake fails the run; GitHub disabling the schedule after 60 days is prevented by the monthly commit (and this README says how to re-enable it). Rollback: revert the commit. |
 
 ## Run locally
