@@ -23,10 +23,16 @@ jobs:
         run: |
           ruff check .
           ruff format --check .
-      - name: Tests (no browser needed)
-        run: python -m pytest -q
+      - name: Tests (no browser needed; coverage gate 65%)
+        run: python -m pytest -q --cov=keep_awake --cov-report=term-missing --cov-fail-under=65
       - name: Dependency audit
         run: pip-audit -r requirements.txt
+      - name: SBOM (CycloneDX)
+        run: cyclonedx-py environment --output-format JSON --output-file sbom.json
+      - uses: actions/upload-artifact@v7
+        with:
+          name: sbom
+          path: sbom.json
 
   links:
     name: Link check (lychee)
