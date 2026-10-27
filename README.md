@@ -102,6 +102,13 @@ answer is paid always-on hosting; this is the free bridge until a pilot pays for
 | **Monitoring and alerting** | A failed run emails me; the stage 5 health check (hotel-ai-handoff) opens an issue when an app is down; the daily failure summary opens one when an app's error rate passes 5% or nothing succeeded. Keep-awake visits are labelled `source=keepawake` so they never count as traffic or errors. |
 | **Failure modes and rollback** | An app that won't wake fails the run; GitHub disabling the schedule after 60 days is prevented by the monthly commit (and this README says how to re-enable it). Rollback: revert the commit. |
 
+## Security & guardrails
+
+[SECURITY.md](SECURITY.md). No secrets are used. Decisions: [docs/DECISIONS.md](docs/DECISIONS.md) ·
+[CHANGELOG](CHANGELOG.md)
+
+**Red team:** no model or user input here; [docs/RED_TEAM.md](docs/RED_TEAM.md) lists what could go wrong and what stops it.
+
 ## Run locally
 
 ```powershell
@@ -133,11 +140,6 @@ If the workflow gets disabled anyway: Actions tab → **Keep Streamlit apps awak
 | Operational automation on free infrastructure | `.github/workflows/keep-streamlit-awake.yml`, `keepalive-commit.yml` |
 | Knowing why the obvious fix fails | "The problem": a curl ping isn't a Streamlit visit |
 | Testable code around a browser | `keep_awake.visit` with a fake page in `tests/` |
-
-## Security
-
-[SECURITY.md](SECURITY.md). No secrets are used. Decisions: [docs/DECISIONS.md](docs/DECISIONS.md) ·
-[CHANGELOG](CHANGELOG.md)
 
 ## Author
 
