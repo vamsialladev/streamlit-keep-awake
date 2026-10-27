@@ -3,6 +3,7 @@
 [![CI](https://github.com/vamsialladev/streamlit-keep-awake/actions/workflows/ci.yml/badge.svg)](https://github.com/vamsialladev/streamlit-keep-awake/actions/workflows/ci.yml)
 [![Keep apps awake](https://github.com/vamsialladev/streamlit-keep-awake/actions/workflows/keep-streamlit-awake.yml/badge.svg)](https://github.com/vamsialladev/streamlit-keep-awake/actions/workflows/keep-streamlit-awake.yml)
 ![Python 3.12](https://img.shields.io/badge/python-3.12-blue)
+![coverage gate 65%](https://img.shields.io/badge/coverage%20gate-%E2%89%A565%25-brightgreen)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
 **A scheduled browser visit that keeps my portfolio's free Streamlit apps awake, so a recruiter's first click
@@ -99,7 +100,7 @@ answer is paid always-on hosting; this is the free bridge until a pilot pays for
 | **Model choice** | None. This is a scheduled browser visit. |
 | **PII and tenant isolation** | It only opens public demo URLs; screenshots show synthetic data and are kept 3 days. |
 | **10K → 1M users** | Not the problem this solves: at real traffic an app never sleeps. For many apps, split `apps.txt` across parallel jobs; for production, always-on hosting replaces this. |
-| **Monitoring and alerting** | A failed run emails me; the stage 5 health check (hotel-ai-handoff) opens an issue when an app is down; the daily failure summary opens one when an app's error rate passes 5% or nothing succeeded. Keep-awake visits are labelled `source=keepawake` so they never count as traffic or errors. |
+| **Monitoring, alerting and hallucination detection** | No model here, so nothing can hallucinate; the apps it visits check grounding on every answer. A failed run emails me; the stage 5 health check (hotel-ai-handoff) opens an issue when an app is down; the daily failure summary opens one when an app's error rate passes 5% or nothing succeeded. Keep-awake visits are labelled `source=keepawake` so they never count as traffic or errors. |
 | **Failure modes and rollback** | An app that won't wake fails the run; GitHub disabling the schedule after 60 days is prevented by the monthly commit (and this README says how to re-enable it). Rollback: revert the commit. |
 
 ## Security & guardrails
