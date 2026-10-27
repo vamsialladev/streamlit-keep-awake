@@ -5,3 +5,5 @@ screenshot-*.png
 .pytest_cache/
 .ruff_cache/
 .env
+.coverage
+sbom.json
