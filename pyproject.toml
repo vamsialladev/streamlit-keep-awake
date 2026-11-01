@@ -1,0 +1,18 @@
+[project]
+name = "streamlit-keep-awake"
+version = "1.2.0"
+description = "Keeps the portfolio's Streamlit Community Cloud apps awake with a scheduled browser visit"
+requires-python = ">=3.12"
+license = { text = "MIT" }
+authors = [{ name = "Vamsi Alla" }]
+
+[tool.ruff]
+line-length = 120
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
